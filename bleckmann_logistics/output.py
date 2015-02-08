@@ -36,7 +36,7 @@ _logger = logging.getLogger(__name__)
 
 # Required logistics_center_dev if you want to use logistic debug mode
 LOGISTIC_DEBUG = False
-# see logistic_center_dev for more information
+# see logistics_center_dev for more information
 DEBUG_DISPLAY_COLUMN = False
 
 FLOWS = {
@@ -112,7 +112,7 @@ class LogisticBackend(orm.Model):
                 ('state', 'in', ('assigned',)),
                 ('type', '=', 'out'),
                 ('log_out_file_doc_id', '=', False),
-                ('logistic_center', '=', str(ids[0])),
+                ('logistics_center', '=', str(ids[0])),
             ],
             context=context)
         if picking_ids:
@@ -130,7 +130,7 @@ class LogisticBackend(orm.Model):
                 ('state', 'in', ('assigned',)),
                 ('type', '=', 'in'),
                 ('log_out_file_doc_id', '=', False),
-                ('logistic_center', '=', str(ids[0])),
+                ('logistics_center', '=', str(ids[0])),
             ],
             context=context)
         if incoming_sh_ids:

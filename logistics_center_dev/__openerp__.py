@@ -20,7 +20,7 @@
 ###############################################################################
 
 {
-    'name': 'Logistic center development tool',
+    'name': 'Logistics center development tool',
     'version': '0.5',
     'category': 'stock',
     'sequence': 10,
@@ -28,7 +28,7 @@
     'description': """
 This module allows to :
 
-  - **simulate logistic center reply** by adding a button on stock picking out
+  - **simulate logistics center reply** by adding a button on stock picking out
     and incoming views to trigger a file reception in file.document.
     You have to override defined methods to format this reply
     for your own logistics center.

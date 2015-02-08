@@ -51,7 +51,7 @@ FLOW_PARAMS = {
 def is_numeric(data):
     try:
         data = str(data)
-    except Exception, e:
+    except Exception as e:
         return False
     return all(char in "0123456789.+-" for char in data)
 

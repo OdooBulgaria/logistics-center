@@ -31,20 +31,20 @@ class PurchaseOrder(orm.Model):
     _inherit = ['purchase.order', 'abstract.logistic.flow']
     _name = 'purchase.order'
 
-    def __init__(self, pool, cr):
-        super(PurchaseOrder, self).__init__(pool, cr)
-        self._columns['warehouse_id'].required = True
+    #def __init__(self, pool, cr):
+        #super(PurchaseOrder, self).__init__(pool, cr)
+        #self._columns['warehouse_id'].required = True
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
         vals = super(PurchaseOrder, self)._prepare_order_picking(
             cr, uid, order, context=context)
-        vals['logistic_center'] = order.logistic_center
+        vals['logistics_center'] = order.logistics_center
         return vals
 
-    def onchange_logistic_center(self, cr, uid, ids, logistic_center, context=None):
+    def onchange_logistics_center(self, cr, uid, ids, logistics_center, context=None):
         for order in self.browse(cr, uid, ids, context=context):
-            if logistic_center and logistic_center != 'internal':
-                logistic_id = int(logistic_center)
+            if logistics_center and logistics_center != 'internal':
+                logistic_id = int(logistics_center)
                 backend = self.pool['logistic.backend'].browse(
                     cr, uid, logistic_id, context=None)
                 location_id = backend.warehouse_id.lot_stock_id.id
@@ -56,13 +56,13 @@ class PurchaseOrder(orm.Model):
         return True
 
     def onchange_warehouse_id(self, cr, uid, ids, warehouse_id):
-        "Set logistic_center according warehouse_id"
+        "Set logistics_center according warehouse_id"
         res = super(PurchaseOrder, self).onchange_warehouse_id(
             cr, uid, ids, warehouse_id)
         if warehouse_id:
-            logistic_center = self.get_logistic_backend(
+            logistics_center = self.get_logistic_backend(
                 cr, uid, [warehouse_id], origin='warehouse')
-            if logistic_center:
-                logistic_center = str(logistic_center)
-            res['value'].update({'logistic_center': logistic_center})
+            if logistics_center:
+                logistics_center = str(logistics_center)
+            res['value'].update({'logistics_center': logistics_center})
         return res

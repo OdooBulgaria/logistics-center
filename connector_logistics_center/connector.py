@@ -44,7 +44,7 @@ class logistic_binding(orm.AbstractModel):
             required=True,
             ondelete='restrict'),
         # some logistics center may not use it
-        'logistic_id': fields.char('ID on Logistic center'),
+        'logistic_id': fields.char('ID on Logistics center'),
     }
 
     # the _sql_contraints cannot be there due to this bug:

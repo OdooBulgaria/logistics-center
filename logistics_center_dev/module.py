@@ -32,9 +32,10 @@ class IrCron(orm.Model):
     _inherit = 'ir.cron'
 
     _columns = {
-        'logistic_center_dev': fields.integer(
+        'logistics_center_dev': fields.integer(
             'Intial active state',
-            help="Cron active field value before logistic_center_dev installation"
+            oldname='logistic_center_dev',
+            help="Cron active field value before logistics_center_dev installation"
             "(0: untouched cron, 1: False, 2: True)",
         )
     }
@@ -53,7 +54,7 @@ class Module(orm.Model):
                 state = 2
             else:
                 state = 1
-            vals = {'logistic_center_dev': state,
+            vals = {'logistics_center_dev': state,
                     'active': False}
             cron_m.write(cr, uid, [res_id], vals)
 
@@ -61,10 +62,10 @@ class Module(orm.Model):
         cron_m = self.pool['ir.cron']
         context.update({'active_test': False})
         cron_ids = cron_m.search(
-            cr, uid, [('logistic_center_dev', 'in', (1, 2))], context=context)
+            cr, uid, [('logistics_center_dev', 'in', (1, 2))], context=context)
         for cron in cron_m.browse(cr, uid, cron_ids, context=context):
             active = False
-            if cron.logistic_center_dev == 2:
+            if cron.logistics_center_dev == 2:
                 active = True
             cron.write({'active': active})
         return super(Module, self).button_immediate_uninstall(cr, uid, ids,

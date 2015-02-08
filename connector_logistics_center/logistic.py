@@ -286,7 +286,7 @@ class AbstractLogisticFlow(orm.AbstractModel):
                                      " in 'Location Stock' or 'Location Input'")
 
     def get_logistic(self, cr, uid, context=None):
-        """ 'logistic_center' field is not a m2o because it must be a required
+        """ 'logistics_center' field is not a m2o because it must be a required
         field but may be with no external logistics center : for internal use
         """
         res = []
@@ -301,12 +301,12 @@ class AbstractLogisticFlow(orm.AbstractModel):
         return self.get_logistic(cr, uid, context=context)
 
     _columns = {
-        'logistic_center': fields.selection(
+        'logistics_center': fields.selection(
             _get_logistic,
             string='Logistic Center',
             required=True,
-            oldname="logistic",
-            help="Logistic center choosen to deliver the order"),
+            oldname='logistic_center',
+            help="Logistics center choosen to deliver the order"),
     }
 
     def get_logistic_backend(self, cr, uid, ids, origin='order', context=None):
@@ -315,8 +315,8 @@ class AbstractLogisticFlow(orm.AbstractModel):
         assert len(ids) == 1, "Will only take one resource id"
         if origin == 'order':
             order = self.browse(cr, uid, ids[0], context=context)
-            if order.logistic_center and order.logistic_center != 'internal':
-                logistic_id = int(order.logistic_center)
+            if order.logistics_center and order.logistics_center != 'internal':
+                logistic_id = int(order.logistics_center)
                 return self.pool['logistic.backend'].browse(
                     cr, uid, logistic_id, context=context)
             else:

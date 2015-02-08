@@ -48,7 +48,7 @@ class SaleOrderLine(orm.Model):
                         return True
         return False
 
-    def logistic_center_catalog_outofdate(self, cr, uid, ids, line,
+    def logistics_center_catalog_outofdate(self, cr, uid, ids, line,
                                           task_method, context=None):
         """Check if product write_date is > last task execution date"""
         backend = line.order_id.get_logistic_backend()
@@ -97,27 +97,61 @@ class SaleOrder(orm.Model):
                 raise orm.except_orm(_("Warehouse settings error: "),
                                      _(self.WAREHOUSE_EXCEPTION
                                      % (backend.warehouse_id.name)))
-            vals['logistic_center'] = order.logistic_center
+            vals['logistics_center'] = order.logistics_center
         return vals
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
         vals = super(SaleOrder, self)._prepare_order_picking(
             cr, uid, order, context=context)
-        vals['logistic_center'] = order.logistic_center
+        vals['logistics_center'] = order.logistics_center
         return vals
+    #
+    #def onchange_shop_id(self, cr, uid, ids, shop_id, context, partner_id,
+    #                     partner_invoice_id, partner_shhipping_id):
+    #    res = super(SaleOrder, self).onchange_shop_id(
+    #        cr, uid, ids, shop_id, context, partner_invoice_id, partner_shhipping_id)
+    #    if shop_id:
+    #        values = res['value']
+    #        shop = self.pool.get('sale.shop').browse(cr, uid, shop_id, context=context)
+    #        values.update({'logistic_center': 'internal'})
+    #        if shop.warehouse_id:
+    #            logistic_center = self.get_logistic_backend(
+    #                cr, uid, [shop.warehouse_id.id], origin='warehouse',
+    #                context=context)
+    #            res['value'].update({'logistic_center': logistic_center})
+    #    return res
 
-    def onchange_shop_id(self, cr, uid, ids, shop_id, context, partner_id,
-                         partner_invoice_id, partner_shhipping_id):
-        res = super(SaleOrder, self).onchange_shop_id(
-            cr, uid, ids, shop_id, context, partner_invoice_id, partner_shhipping_id)
-        if shop_id:
-            values = res['value']
-            shop = self.pool.get('sale.shop').browse(cr, uid, shop_id, context=context)
-            values.update({'logistic_center': 'internal'})
-            if shop.warehouse_id:
-                logistic_center = self.get_logistic_backend(
-                    cr, uid, [shop.warehouse_id.id], origin='warehouse',
-                    context=context)
-                res['value'].update({'logistic_center': logistic_center})
+    def onchange_warehouse_id(self, cr, uid, ids, warehouse_id, context=None):
+        res = super(SaleOrder, self).onchange_warehouse_id(
+            cr, uid, ids, warehouse_id, context=context)
+        val = res['value']
+        val.update({'logistics_center': 'internal'})
+        if warehouse_id:
+            warehouse = self.pool['stock.warehouse'].browse(cr, uid, warehouse_id, context=context)
+            logistics_center = self.get_logistic_backend(
+                cr, uid, [warehouse.id], origin='warehouse',
+                context=context)
+            val.update({'logistics_center': logistics_center})
+            res['value'] = val
         return res
 
+    # sale_stock
+    #def onchange_warehouse_id(self, cr, uid, ids, warehouse_id, context=None):
+    #    val = {}
+    #    if warehouse_id:
+    #        warehouse = self.pool.get('stock.warehouse').browse(cr, uid, warehouse_id, context=context)
+    #        if warehouse.company_id:
+    #            val['company_id'] = warehouse.company_id.id
+    #    return {'value': val}
+    #
+    # sale
+    #def onchange_warehouse_id(self, cr, uid, ids, warehouse_id, context=None):
+    #    """ Finds location id for changed warehouse.
+    #    @param warehouse_id: Changed id of warehouse.
+    #    @return: Dictionary of values.
+    #    """
+    #    if warehouse_id:
+    #        w = self.pool.get('stock.warehouse').browse(cr, uid, warehouse_id, context=context)
+    #        v = {'location_id': w.lot_stock_id.id}
+    #        return {'value': v}
+    #    return {}

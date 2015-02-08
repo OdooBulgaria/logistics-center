@@ -29,7 +29,7 @@ from openerp.tools.translate import _
 LOGISTIC_FIELDS = [
     'log_out_file_doc_id',
     'log_in_file_doc_id',
-    'logistic_center',
+    'logistics_center',
 ]
 
 
@@ -39,11 +39,11 @@ class StockMove(orm.Model):
     def _select_location_dest_id(self, cr, uid, context=None):
         print context
         location_dest_id = False
-        logistic_center = context.get('logistic_center', False)
+        logistics_center = context.get('logistics_center', False)
         if context['picking_type'] == 'in' \
-                and logistic_center and logistic_center != 'internal':
+                and logistics_center and logistics_center != 'internal':
             backend = self.pool['logistic.backend'].browse(
-                cr, uid, int(logistic_center), context=context)
+                cr, uid, int(logistics_center), context=context)
             location_dest_id = backend.warehouse_id.lot_stock_id.id
         return location_dest_id
 
@@ -72,7 +72,7 @@ class AbstractStockPicking(orm.AbstractModel):
             default = {}
         for field in ['log_out_file_doc_id', 'log_in_file_doc_id']:
             default[field] = False
-        default['logistic_center'] = self.browse(cr, uid, id).logistic_center
+        default['logistics_center'] = self.browse(cr, uid, id).logistics_center
         return super(AbstractStockPicking, self).copy(cr, uid, id,
                                                       default, context=context)
 
@@ -83,14 +83,14 @@ class AbstractStockPicking(orm.AbstractModel):
             readonly=True,
             help="Refers the 'File document' object which "
                  "contains informations to send to "
-                 "Logistic center for synchronisation purpose."),
+                 "Logistics center for synchronisation purpose."),
         'log_in_file_doc_id': fields.many2one(
             'file.document',
             'Logistic Doc. In',
             readonly=True,
             help="Refers the 'File document' object which "
                  "contains informations sent by "
-                 "Logistic center in response from original message."),
+                 "Logistics center in response from original message."),
     }
 
     def run_job(self, cr, uid, picking_id, buffer_id, file_doc_id, moves,

@@ -16,7 +16,7 @@
             <field name="sequence">10</field>
             <field name="model">sale.order</field>
             <field name="code">
-if order.logistic_center and order.logistic_center != 'internal':
+if order.logistics_center and order.logistics_center != 'internal':
     if order.partner_shipping_id:
         sh = order.partner_shipping_id
         if sh.street == False or sh.city == False:
