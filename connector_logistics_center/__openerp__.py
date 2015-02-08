@@ -71,12 +71,12 @@ see Bleckmann Logistics module in the same branch
     'data': [
         'backend_view.xml',
         'logistic_view.xml',
-        'stock_view.xml',
-        'sale_view.xml',
-        'purchase_view.xml',
-        'file_exchange_view.xml',
-        'data/sale_data.xml',
-        'security/ir.model.access.csv',
+        #'stock_view.xml',
+        #'sale_view.xml',
+        #'purchase_view.xml',
+        #'file_exchange_view.xml',
+        #'data/sale_data.xml',
+        #'security/ir.model.access.csv',
     ],
     'demo': [
     ],
